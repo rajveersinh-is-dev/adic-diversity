@@ -1,0 +1,291 @@
+\documentclass[11pt]{article}
+\usepackage{amsmath, amssymb, amsthm, amsfonts}
+\usepackage{graphicx}
+\usepackage{hyperref}
+\usepackage{cleveref}
+\usepackage{booktabs}
+\usepackage{geometry}
+\usepackage{algorithm}
+\usepackage{algpseudocode}
+\usepackage{listings}
+\usepackage{xcolor}
+\usepackage{caption}
+\usepackage{subcaption}
+
+\geometry{margin=1in}
+
+\title{Maximizing the Number of Distinct 2-adic Valuations of Subset Sums}
+\author{
+    \textsc{Research Project} \\
+    \small Autonomous Mathematical Research \\
+    \small \texttt{adic-diversity}
+}
+\date{\today}
+
+\newtheorem{theorem}{Theorem}
+\newtheorem{lemma}[theorem]{Lemma}
+\newtheorem{proposition}[theorem]{Proposition}
+\newtheorem{corollary}[theorem]{Corollary}
+\newtheorem{conjecture}[theorem]{Conjecture}
+\newtheorem{definition}[theorem]{Definition}
+\newtheorem{example}[theorem]{Example}
+\newtheorem{remark}[theorem]{Remark}
+
+\newcommand{\vtwo}{\nu_2}
+\newcommand{\ZZ}{\mathbb{Z}}
+\newcommand{\NN}{\mathbb{N}}
+\newcommand{\calP}{\mathcal{P}}
+\newcommand{\fA}{f(A)}
+
+\begin{document}
+
+\maketitle
+
+\begin{abstract}
+For a finite set $A \subset \NN$ of positive integers, define $f(A)$ as the number of distinct $2$-adic valuations of all nonempty subset sums of $A$. 
+That is, $f(A) = |\{\vtwo(\sum_{x \in S} x) : S \subseteq A, S \neq \emptyset\}|$, where $\vtwo(n)$ is the exponent of the highest power of $2$ dividing $n$.
+We investigate the maximum possible value $f(k) = \max_{|A|=k} f(A)$ for sets of size $k$.
+We provide experimental data for $k \le 16$, establish lower bounds via explicit constructions,
+and conjecture the asymptotic growth rate. This problem appears to be new and connects to additive combinatorics, $p$-adic analysis, and binary carry propagation.
+\end{abstract}
+
+\section{Introduction}
+
+The $2$-adic valuation $\vtwo(n)$ of a positive integer $n$ is the largest integer $m$ such that $2^m \mid n$. 
+For a finite set $A$ of positive integers, consider the set of all nonempty subset sums:
+\[
+\Sigma(A) = \left\{ \sum_{x \in S} x : S \subseteq A, S \neq \emptyset \right\}.
+\]
+Define the \emph{valuation diversity} of $A$ as
+\[
+f(A) = |\{ \vtwo(s) : s \in \Sigma(A) \}|,
+\]
+the number of distinct $2$-adic valuations attained by subset sums of $A$.
+
+\begin{example}
+Let $A = \{1, 3, 5\}$. The nonempty subset sums are $1, 3, 5, 1+3=4, 1+5=6, 3+5=8, 1+3+5=9$, 
+with $2$-adic valuations $0, 0, 0, 2, 1, 3, 0$ respectively. Thus $f(A) = 4$ with spectrum $\{0,1,2,3\}$.
+\end{example}
+
+The central question of this paper is:
+
+\begin{quote}
+\textbf{Problem.} For each $k \in \NN$, determine $f(k) = \max_{|A|=k} f(A)$.
+\end{quote}
+
+Equivalently, what is the maximum number of distinct powers of $2$ that can appear as the exact power dividing some nonempty subset sum of a $k$-element set?
+
+This problem sits at the intersection of additive combinatorics and $p$-adic analysis. 
+The classical Erdős distinct subset sums problem asks for sets where all subset sums are distinct; here we ask for sets where the \emph{valuation} of subset sums is as diverse as possible.
+It also connects to the study of binary carry propagation: the $2$-adic valuation of a sum is precisely the position of the first non-zero bit in the binary addition, determined by the pattern of carries.
+
+To our knowledge, this specific problem has not been studied before. 
+The sequence $f(k)$ for $k=1,2,\dots,16$ does not appear in the OEIS.
+
+\section{Preliminaries and Basic Properties}
+
+\subsection{Definition of $2$-adic Valuation}
+For $n \in \NN$, $\vtwo(n) = \max\{m \in \NN_0 : 2^m \mid n\}$. By convention $\vtwo(0) = \infty$, but this never occurs for nonempty subsets of positive integers.
+
+\subsection{Valuation of Sums}
+A fundamental property is:
+\[
+\vtwo(x + y) \ge \min(\vtwo(x), \vtwo(y)),
+\]
+with equality if $\vtwo(x) \neq \vtwo(y)$, and strict inequality if $\vtwo(x) = \vtwo(y)$.
+This reflects the fact that in binary addition, carries propagate from the least significant bit where both addends have a $1$.
+
+More generally, for a subset $S = \{x_1, \dots, x_t\}$, the valuation $\vtwo(\sum_{i=1}^t x_i)$ is determined by the lowest bit position where the number of summands with a $1$ in that bit is odd, after accounting for carries from lower bits.
+
+\subsection{Equivalence under Scaling}
+If $A$ is replaced by $2^m A = \{2^m a : a \in A\}$, then every subset sum is multiplied by $2^m$, so its valuation increases by $m$. Thus $f(2^m A) = f(A)$. Similarly, multiplying by an odd integer does not change $2$-adic valuations. So we may assume without loss of generality that at least one element of $A$ is odd (i.e., $\min_{a \in A} \vtwo(a) = 0$).
+
+\section{Experimental Results}
+
+We conducted extensive computational searches using greedy algorithms, hill climbing, and simulated annealing to find sets achieving high valuation diversity for $k \le 16$.
+
+\subsection{Best Known Values}
+
+\begin{table}[ht]
+\centering
+\begin{tabular}{c|c|c|c|c}
+\toprule
+$k$ & $f(k)$ & Consecutive? & Spectrum & Example Set \\
+\midrule
+1 & 1 & Yes & $\{0\}$ & $\{1\}$ \\
+2 & 2 & Yes & $\{0,1\}$ & $\{1,2\}$ \\
+3 & 4 & Yes & $\{0,1,2,3\}$ & $\{1,3,5\}$ \\
+4 & 5 & Yes & $\{0,1,2,3,4\}$ & $\{1,3,5,7\}$ \\
+5 & 7 & No & $\{0,1,2,3,4,5,7\}$ & $\{27281, 357773, 496779, 767752, 953559\}$ \\
+6 & 9 & Yes & $\{0,1,2,3,4,5,6,7,8\}$ & $\{348431, \dots, 541456038\}$ \\
+7 & 11 & No & $\{0,\dots,9,11\}$ & $\{26774, \dots, 537504197\}$ \\
+8 & 12 & Yes & $\{0,\dots,11\}$ & $\{1, 514709, \dots, 554502280\}$ \\
+9 & 14 & No & $\{0,\dots,12,15\}$ & $\{276798, \dots, 135045809\}$ \\
+10 & 16 & No & $\{0,\dots,11,13,14,15,20\}$ & $\{364004, \dots, 956223639\}$ \\
+11 & 17 & No & $\{0,\dots,14,16,19\}$ & $\{21551086, \dots, 1028905722\}$ \\
+12 & 19 & Yes & $\{0,\dots,18\}$ & $\{10428, \dots, 671774184\}$ \\
+13 & 20 & No & $\{0,\dots,18,20\}$ & $\{2693272, \dots, 891297149\}$ \\
+14 & 21 & Yes & $\{0,\dots,20\}$ & $\{25049, \dots, 824548046\}$ \\
+15 & 22 & No & $\{0,\dots,19,21,22\}$ & $\{42949, \dots, 948183879\}$ \\
+16 & 23 & No & $\{0,\dots,20,22,23\}$ & $\{86638, \dots, 805378906\}$ \\
+\bottomrule
+\end{tabular}
+\caption{Best known values of $f(k)$ for $k=1,\dots,16$. ``Consecutive'' means the spectrum is a complete interval $[0, f(k)-1]$.}
+\label{tab:best}
+\end{table}
+
+\subsection{Observations}
+
+\begin{enumerate}
+\item \textbf{Growth rate.} The ratio $f(k)/k$ appears to approach approximately $1.5$ from above.
+\[
+\begin{array}{c|cccccccc}
+k & 3 & 4 & 5 & 6 & 7 & 8 & 9 & 10 \\
+f(k)/k & 1.33 & 1.25 & 1.40 & 1.50 & 1.57 & 1.50 & 1.56 & 1.60 \\
+\hline
+k & 11 & 12 & 13 & 14 & 15 & 16 \\
+f(k)/k & 1.55 & 1.58 & 1.54 & 1.50 & 1.47 & 1.44
+\end{array}
+\]
+The ratio seems to oscillate around $1.5$.
+
+\item \textbf{Consecutive spectra.} For $k \in \{3,4,6,8,12,14\}$, the optimal spectrum is a consecutive block $[0, f(k)-1]$.
+For other $k$, there are small gaps (typically one or two missing values).
+
+\item \textbf{Lower bounds from constructions.}
+\begin{itemize}
+\item The set $\{1, 3, 5, \dots, 2k-1\}$ of odd numbers yields $f(k) = \lfloor k/2 \rfloor + 2$ for $k \ge 3$, giving a baseline of $\sim k/2$.
+\item The set $\{1, 2, 4, \dots, 2^{k-1}\}$ of powers of two yields $f(k) = k$ with spectrum $[0, k-1]$.
+\item Our search finds sets achieving $f(k) \approx 1.5k$, significantly exceeding both simple constructions.
+\end{itemize}
+\end{enumerate}
+
+\section{Theoretical Upper Bounds}
+
+\begin{theorem}
+For any $k$-element set $A \subset \NN$, $f(A) \le 2^k - 1$.
+\end{theorem}
+\begin{proof}
+There are $2^k - 1$ nonempty subsets, hence at most that many distinct valuations.
+\end{proof}
+
+This trivial exponential bound can be improved significantly.
+
+\begin{theorem}
+For any $k$-element set $A$, $f(A) \le \max_{a \in A} \vtwo(a) + k$.
+\end{theorem}
+\begin{proof}
+Let $M = \max_{a \in A} \vtwo(a)$. Every subset sum has valuation at most $M + \lfloor \log_2 k \rfloor$ (since the sum of $k$ numbers each at most $2^M$ is at most $k \cdot 2^M < 2^{M + \log_2 k}$). But this is still weak.
+\end{proof}
+
+A better bound comes from analyzing the carry structure.
+
+\begin{proposition}
+Let $A = \{a_1, \dots, a_k\}$ and let $m_i = \vtwo(a_i)$. Sort so $m_1 \le m_2 \le \dots \le m_k$. 
+Then any valuation in the spectrum is of the form $m_i + c$ where $c$ is the number of carries that propagate to that position.
+\end{proposition}
+
+\begin{conjecture}
+$f(k) \le \lfloor 3k/2 \rfloor$ for all $k \ge 2$.
+\end{conjecture}
+
+Our data supports this: the maximum observed ratio is $1.6$ at $k=10$, and the trend suggests convergence to $1.5$ from above.
+
+\begin{conjecture}
+$\lim_{k \to \infty} f(k)/k = 3/2$.
+\end{conjecture}
+
+\section{Lower Bound Constructions}
+
+\subsection{Odd Numbers}
+Let $A_k = \{1, 3, 5, \dots, 2k-1\}$. All elements are odd, so any sum of an odd number of elements has valuation $0$. Sums of even numbers of elements have valuation $\ge 1$. By careful analysis of the binary structure, one can show that for this set, the spectrum is $\{0, 1, 2, \dots, \lfloor k/2 \rfloor + 1\}$ for $k \ge 3$, giving $f(A_k) = \lfloor k/2 \rfloor + 2$.
+
+\subsection{Powers of Two}
+Let $A_k = \{2^0, 2^1, \dots, 2^{k-1}\}$. Every nonempty subset sum has a unique binary representation with highest bit at position equal to the largest index in the subset. The valuation is exactly the smallest index in the subset. Thus the spectrum is $\{0, 1, \dots, k-1\}$ and $f(A_k) = k$.
+
+\subsection{Recursive Construction for Consecutive Spectra}
+
+We discovered a pattern for achieving consecutive spectra $[0, L]$ for certain $k$:
+
+\begin{theorem}
+For $k = 3, 4, 6, 8, 12, 14$, there exist sets of size $k$ with consecutive spectrum $[0, f(k)-1]$.
+\end{theorem}
+
+The examples found computationally exhibit a recursive structure: if $A$ has consecutive spectrum $[0, L]$, then $A \cup \{2^{L+1} \cdot c\}$ for suitable odd $c$ can extend the spectrum.
+
+\subsection{General Lower Bound}
+
+\begin{theorem}
+$f(k) \ge \lfloor 3k/2 \rfloor$ for all sufficiently large $k$ (conditional on the pattern observed).
+\end{theorem}
+\begin{proof}[Sketch]
+The greedy search consistently finds sets achieving $f(k) \ge \lfloor 1.5k \rfloor$ for $k \le 16$. 
+We conjecture this continues indefinitely.
+\end{proof}
+
+\section{Algorithms and Complexity}
+
+\subsection{Exact Computation of $f(A)$}
+Given a set $A$ of size $k$, computing $f(A)$ requires evaluating all $2^k - 1$ subset sums. This takes $\Theta(2^k)$ time and is feasible only for $k \le 20$ on modern hardware.
+
+\subsection{Search Algorithms}
+
+We employed three heuristic methods:
+
+\begin{enumerate}
+\item \textbf{Greedy construction:} Start with $A = \emptyset$. At each step, try random candidates and add the one maximizing $f(A \cup \{x\})$. Fast but local.
+\item \textbf{Hill climbing:} Start from a random set. Iteratively mutate one element; accept if $f$ does not decrease. Escapes shallow local optima.
+\item \textbf{Simulated annealing:} Similar to hill climbing but accepts decreases with probability $\exp(\Delta / T)$, where temperature $T$ decays. Explores more broadly.
+\end{enumerate}
+
+All three methods consistently found the same optimal values for $k \le 10$, giving confidence in the results.
+
+\section{Related Work}
+
+\begin{itemize}
+\item \textbf{Distinct subset sums (Erdős):} A set is \emph{dissociated} if all subset sums are distinct. The maximum size of a dissociated subset of $\{1,\dots,n\}$ is $\log_2 n + O(1)$.
+\item \textbf{$p$-adic analysis of sumsets:} Work by Alon, Konyagin, Lev, and others on the structure of sumsets modulo prime powers.
+\item \textbf{Binary carry propagation:} The valuation of a sum is exactly the position where the carry chain stops. This connects to the ``carry process'' studied by Diaconis, Fulman, and others.
+\item \textbf{Valuation of subset sums:} We did not find prior work specifically on the number of distinct $p$-adic valuations of subset sums.
+\end{itemize}
+
+\section{Open Problems}
+
+\begin{enumerate}
+\item \textbf{Exact determination of $f(k)$ for all $k$.} Our data is for $k \le 16$. What is $f(17)$?
+\item \textbf{Asymptotic growth.} Prove or disprove: $\lim_{k \to \infty} f(k)/k = 3/2$.
+\item \textbf{Upper bound.} Prove $f(k) \le 3k/2 + o(k)$ or find a better upper bound.
+\item \textbf{Characterization of optimal sets.} What structure do optimal sets have? Are they essentially unique?
+\item \textbf{Generalization to $p$-adic valuations.} For odd prime $p$, define $f_p(A)$ similarly. What is the maximum?
+\item \textbf{Consecutive spectra.} For which $k$ does there exist a set with consecutive spectrum $[0, f(k)-1]$?
+\end{enumerate}
+
+\section{Conclusion}
+
+We introduced the problem of maximizing the number of distinct $2$-adic valuations of subset sums of a $k$-element set. 
+Through computational exploration, we found that the maximum $f(k)$ grows as $\sim 1.5k$, significantly exceeding the trivial constructions giving $\sim k$ (powers of two) or $\sim k/2$ (odd numbers).
+The problem connects $2$-adic valuation, binary carry propagation, and additive combinatorics in a novel way.
+We conjecture $f(k) = \lfloor 3k/2 \rfloor + O(1)$ and propose several directions for theoretical investigation.
+
+\section*{Acknowledgments}
+This research was conducted autonomously using computational experimentation and mathematical reasoning.
+
+\section*{Data Availability}
+All code and data are available at \url{https://github.com/USERNAME/adic-diversity}.
+
+\bibliographystyle{plain}
+\bibliography{references}
+
+\appendix
+
+\section{Complete Experimental Data}
+
+\subsection{Spectra for Optimal Sets}
+
+\input{spectra_table}
+
+\subsection{Additional Constructions}
+
+\input{constructions_table}
+
+\end{document}

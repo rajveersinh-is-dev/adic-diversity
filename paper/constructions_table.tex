@@ -1,0 +1,19 @@
+\begin{table}[ht]
+\centering
+\begin{tabular}{c|c|c|c}
+\toprule
+$k$ & Construction & $f(A)$ & Spectrum \\
+\midrule
+Any & Powers of two: $\{1,2,4,\dots,2^{k-1}\}$ & $k$ & $[0, k-1]$ \\
+Any & Odd numbers: $\{1,3,5,\dots,2k-1\}$ & $\lfloor k/2 \rfloor + 2$ & $\{0,1,\dots,\lfloor k/2 \rfloor+1\}$ \\
+3 & $\{1,3,5\}$ & 4 & $[0,3]$ \\
+4 & $\{1,3,5,7\}$ & 5 & $[0,4]$ \\
+5 & $\{1,2,5,9,15\}$ & 6 & $[0,5]$ \\
+6 & $\{1,7,11,14,15,16\}$ & 7 & $[0,6]$ \\
+8 & Greedy: $\{780,1097,1866,3083,7935,8620,9086,9773\}$ & 12 & $[0,11]$ \\
+12 & Greedy: $\{6309,9914,12404,12666,15510,17728,17734,24752,25484,28688\}$ & 19 & $[0,18]$ \\
+\bottomrule
+\end{tabular}
+\caption{Some explicit constructions and their valuation diversity.}
+\label{tab:constructions}
+\end{table}

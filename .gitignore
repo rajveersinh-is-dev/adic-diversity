@@ -1,0 +1,56 @@
+# Byte-compiled / optimized / DLL files
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Distribution / packaging
+*.egg-info/
+dist/
+build/
+
+# Virtual environments
+venv/
+env/
+.venv/
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Testing
+.pytest_cache/
+.coverage
+htmlcov/
+
+# Data files (keep small results, ignore large ones)
+results/*.json
+results/*.csv
+!results/extensive.json
+!results/extensive.csv
+!results/constructions.json
+!results/constructions.csv
+!results/greedy.json
+!results/greedy.csv
+
+# Figures (generated)
+figures/*.png
+figures/*.pdf
+
+# LaTeX auxiliary
+paper/*.aux
+paper/*.bbl
+paper/*.blg
+paper/*.log
+paper/*.out
+paper/*.toc
+paper/*.fls
+paper/*.fdb_latexmk
+
+# Local config
+*.local
