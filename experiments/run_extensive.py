@@ -3,13 +3,15 @@
 Run more extensive search with hill climbing and simulated annealing.
 """
 
-import json
-from pathlib import Path
 from adic_diversity.core import f, valuation_spectrum, spectrum_stats
 from adic_diversity.search import hill_climb, simulated_annealing, multi_start_search
 from adic_diversity.experiments import save_results
 
+
 def main():
+    """Entry point — parse arguments and run the main computation.
+    
+    """
     print("Running extensive search...")
     
     results = []
