@@ -4,13 +4,16 @@ Explicit constructions for sets with high 2-adic valuation diversity.
 
 from typing import Set, List
 
+
 def odd_numbers_set(k: int) -> Set[int]:
     """The set {1, 3, 5, ..., 2k-1} of first k odd numbers."""
     return {2 * i + 1 for i in range(k)}
 
+
 def powers_of_two_set(k: int) -> Set[int]:
     """The set {1, 2, 4, ..., 2^(k-1)}."""
     return {2**i for i in range(k)}
+
 
 def consecutive_block_construction(k: int) -> Set[int]:
     """
@@ -38,6 +41,7 @@ def consecutive_block_construction(k: int) -> Set[int]:
     # Fallback: greedy-like construction
     return {i * 1000 + 1 for i in range(k)}
 
+
 def binary_pattern_set(k: int) -> Set[int]:
     """
     Construct sets based on binary patterns.
@@ -54,9 +58,11 @@ def binary_pattern_set(k: int) -> Set[int]:
         i += 1
     return A
 
+
 def arithmetic_progression_set(k: int, d: int = 2) -> Set[int]:
     """Arithmetic progression with difference d."""
     return {1 + i * d for i in range(k)}
+
 
 def geometric_progression_set(k: int, r: int = 2) -> Set[int]:
     """Geometric progression with ratio r."""
