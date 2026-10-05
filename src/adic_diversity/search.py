@@ -2,13 +2,16 @@
 Search algorithms for maximizing 2-adic valuation diversity.
 """
 
-import random
 from typing import Set, List, Tuple, Optional, Callable
+
 from .core import f, valuation_spectrum
+import random
+
 
 def random_set(k: int, max_val: int = 10**9) -> Set[int]:
     """Generate random k-element set."""
     return set(random.sample(range(1, max_val + 1), k))
+
 
 def random_search(k: int, trials: int = 10000, max_val: int = 10**9) -> Tuple[int, Set[int]]:
     """Pure random search for maximum f."""
@@ -21,6 +24,7 @@ def random_search(k: int, trials: int = 10000, max_val: int = 10**9) -> Tuple[in
             best_val = val
             best_set = A
     return best_val, best_set
+
 
 def mutate(A: Set[int], max_val: int = 10**9) -> Set[int]:
     """Mutate a set by changing one element."""
@@ -44,6 +48,7 @@ def mutate(A: Set[int], max_val: int = 10**9) -> Set[int]:
         return set(B)
     return A
 
+
 def hill_climb(k: int, steps: int = 1000, max_val: int = 10**9,
                start_set: Optional[Set[int]] = None) -> Tuple[int, Set[int]]:
     """Hill climbing search."""
@@ -59,6 +64,7 @@ def hill_climb(k: int, steps: int = 1000, max_val: int = 10**9,
             best_val = val
             best_A = set(B)
     return best_val, best_A
+
 
 def greedy_construct(k: int, candidates_per_step: int = 5000,
                      max_val: int = 10**6) -> Set[int]:
@@ -80,6 +86,7 @@ def greedy_construct(k: int, candidates_per_step: int = 5000,
         else:
             break
     return A
+
 
 def simulated_annealing(k: int, iterations: int = 10000,
                         max_val: int = 10**9,
@@ -104,6 +111,7 @@ def simulated_annealing(k: int, iterations: int = 10000,
                 best_val = val
                 best_A = set(B)
     return best_val, best_A
+
 
 def multi_start_search(k: int, restarts: int = 20,
                        method: str = 'hill_climb',
