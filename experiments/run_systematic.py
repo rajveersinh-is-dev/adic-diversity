@@ -3,11 +3,14 @@
 Run systematic experiments to find maximum f(k) for small k.
 """
 
-import json
-from pathlib import Path
+
 from adic_diversity.experiments import exhaustive_search, benchmark_constructions, systematic_greedy, save_results
 
+
 def main():
+    """Entry point — parse arguments and run the main computation.
+    
+    """
     print("Running systematic experiments...")
     
     # Exhaustive search for small k (only very small) - SKIP for now
