@@ -10,6 +10,7 @@ from .core import f, valuation_spectrum, spectrum_stats
 from .search import greedy_construct, random_search, hill_climb, multi_start_search
 from .constructions import odd_numbers_set, powers_of_two_set
 
+
 def exhaustive_search(k: int, max_val: int) -> Dict:
     """Exhaustive search for small k and max_val."""
     from itertools import combinations
@@ -30,6 +31,7 @@ def exhaustive_search(k: int, max_val: int) -> Dict:
         'examples': [sorted(s) for s in best_sets[:10]]
     }
 
+
 def benchmark_constructions(max_k: int = 12) -> List[Dict]:
     """Evaluate standard constructions."""
     results = []
@@ -41,6 +43,7 @@ def benchmark_constructions(max_k: int = 12) -> List[Dict]:
             row[f'{name}_spec'] = str(sorted(valuation_spectrum(A)))
         results.append(row)
     return results
+
 
 def systematic_greedy(max_k: int = 16, trials: int = 30, max_val: int = 100000) -> List[Dict]:
     """Run greedy search multiple times for each k."""
@@ -66,6 +69,7 @@ def systematic_greedy(max_k: int = 16, trials: int = 30, max_val: int = 100000) 
         })
     return results
 
+
 def save_results(results: List[Dict], filepath: str):
     """Save results to JSON and CSV."""
     path = Path(filepath)
@@ -84,6 +88,7 @@ def save_results(results: List[Dict], filepath: str):
                 # Convert lists to strings
                 row_copy = {k: (str(v) if isinstance(v, list) else v) for k, v in row.items()}
                 writer.writerow(row_copy)
+
 
 def load_results(filepath: str) -> List[Dict]:
     """Load results from JSON."""
