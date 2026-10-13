@@ -16,6 +16,8 @@ The implementation has been modernised for Python 3.10+:
 *   The ``figures`` output directory is created automatically.
 *   The script is now structured around a ``main()`` function, making the
     module import‑safe while preserving the original command‑line behaviour.
+*   Matplotlib imports are deferred to plotting functions to allow importing
+    the module without matplotlib installed (useful for testing).
 """
 
 from __future__ import annotations
@@ -25,13 +27,6 @@ import sys
 from pathlib import Path
 from typing import List, Sequence
 
-import matplotlib
-import matplotlib.pyplot as plt
-
-# ``matplotlib`` must use a non‑interactive backend when the script is run in
-# headless environments (e.g., CI).  The original code set this globally; we
-# keep the behaviour but do it as early as possible.
-matplotlib.use("Agg")
 
 # ---------------------------------------------------------------------------
 # Helper functions
@@ -84,6 +79,10 @@ def plot_f_vs_k(all_ks: Sequence[int], full_fs: Sequence[int], out_path: Path) -
     out_path:
         Destination file for the PNG image.
     """
+    import matplotlib
+    matplotlib.use("Agg")
+    import matplotlib.pyplot as plt
+
     plt.figure(figsize=(8, 5))
     plt.plot(all_ks, full_fs, "bo-", label="Best found $f(k)$")
     plt.plot(all_ks, list(all_ks), "r--", label="$f(k)=k$ (powers of 2)")
@@ -104,6 +103,10 @@ def plot_ratio(all_ks: Sequence[int], full_fs: Sequence[int], out_path: Path) ->
 
     Parameters are analogous to :func:`plot_f_vs_k`.
     """
+    import matplotlib
+    matplotlib.use("Agg")
+    import matplotlib.pyplot as plt
+
     ratios = [f / k for f, k in zip(full_fs, all_ks)]
     plt.figure(figsize=(8, 5))
     plt.plot(all_ks, ratios, "bo-")
@@ -137,10 +140,15 @@ def plot_spectrum(k: int, example_set: set[int], out_path: Path, *, title_suffix
 
     spec = sorted(valuation_spectrum(example_set))
     max_val = max(spec)
-    colors = ["green" if v in spec else "red" for v in range(max_val + 1)]
+    spec_set = set(spec)
+    colors = ["green" if v in spec_set else "red" for v in range(max_val + 1)]
+    import matplotlib
+    matplotlib.use("Agg")
+    import matplotlib.pyplot as plt
+
     plt.figure(figsize=(10, 3))
     plt.bar(range(max_val + 1), [1] * (max_val + 1), color=colors, edgecolor="black")
-    plt.xlabel("2-adic valuation $\\nu_2$")
+    plt.xlabel("2-adic valuation $\nu_2$")
     plt.ylabel("Present")
     plt.title(f"Valuation Spectrum for k={k} ({title_suffix})")
     plt.tight_layout()
@@ -159,10 +167,14 @@ def plot_constructions(all_ks: Sequence[int], full_fs: Sequence[int], out_path: 
     powers_f = [f(powers_of_two_set(k)) for k in all_ks]
     odd_f = [f(odd_numbers_set(k)) for k in all_ks]
 
+    import matplotlib
+    matplotlib.use("Agg")
+    import matplotlib.pyplot as plt
+
     plt.figure(figsize=(8, 5))
     plt.plot(all_ks, full_fs, "bo-", label="Best found (search)")
-    plt.plot(all_ks, powers_f, "r--", label="Powers of 2 ($f=k$)")
-    plt.plot(all_ks, odd_f, "g--", label="Odd numbers ($f \approx k/2$)")
+    plt.plot(all_ks, powers_f, "r--", label="Powers of 2 ($f=k$")
+    plt.plot(all_ks, odd_f, "g--", label="Odd numbers ($f \approx k/2$")
     plt.xlabel("$k$")
     plt.ylabel("$f(k)$")
     plt.title("Comparison of Constructions")
